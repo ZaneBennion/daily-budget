@@ -91,8 +91,10 @@ class _BudgetScreenState extends State<BudgetScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final bool isShortScreen = MediaQuery.of(context).size.height < 600;
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Budget App')),
+      appBar: isShortScreen ? null : AppBar(title: const Text('Budget App')),
       body: Column(
         children: [
           BudgetDisplay(budget: budget, pendingTransaction: pendingTransaction),
