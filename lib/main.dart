@@ -34,6 +34,11 @@ class _BudgetScreenState extends State<BudgetScreen> {
           int subtractionAmount = int.parse(pendingTransaction);
           budget -= subtractionAmount;
           pendingTransaction = '';
+        } else {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const SettingsScreen()),
+          );
         }
       } else {
         pendingTransaction += value;
@@ -153,6 +158,18 @@ class Keypad extends StatelessWidget {
           _buildButtonRow(['C', '0', '=']),
         ],
       ),
+    );
+  }
+}
+
+class SettingsScreen extends StatelessWidget {
+  const SettingsScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Settings')),
+      body: const Center(child: Text('Settings page will go here')),
     );
   }
 }
