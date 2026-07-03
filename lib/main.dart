@@ -47,7 +47,7 @@ class _BudgetScreenState extends State<BudgetScreen> {
       appBar: AppBar(title: const Text('Budget App')),
       body: Column(
         children: [
-          BudgetDisplay(budget: budget),
+          BudgetDisplay(budget: budget, pendingTransaction: pendingTransaction),
           Expanded(child: Keypad(onButtonPressed: _handleButtonPress)),
         ],
       ),
@@ -57,18 +57,54 @@ class _BudgetScreenState extends State<BudgetScreen> {
 
 class BudgetDisplay extends StatelessWidget {
   final int budget;
+  final String pendingTransaction;
 
-  const BudgetDisplay({super.key, required this.budget});
+  const BudgetDisplay({
+    super.key,
+    required this.budget,
+    required this.pendingTransaction,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: 150,
-      color: AppColors.blue,
-      alignment: Alignment.centerRight,
-      child: Text(
-        '\$$budget',
-        style: const TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Expanded(
+            flex: 2,
+            child: Container(
+              color: AppColors.blue,
+              alignment: Alignment.centerRight,
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 0),
+              child: Text(
+                '\$$budget',
+                style: const TextStyle(
+                  fontSize: 48,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+
+          if (pendingTransaction.isNotEmpty)
+            Expanded(
+              flex: 1,
+              child: Container(
+                color: AppColors.pink,
+                alignment: Alignment.centerRight,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 0,
+                ),
+                child: Text(
+                  '-$pendingTransaction',
+                  style: const TextStyle(fontSize: 36),
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }
