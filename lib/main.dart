@@ -1,5 +1,6 @@
 import 'package:budget_app/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   runApp(const MyApp());
@@ -25,25 +26,67 @@ class _BudgetScreenState extends State<BudgetScreen> {
   int budget = 0;
   String pendingTransaction = '';
 
-  void _handleButtonPress(String value) {
+  @override
+  void initState() {
+    super.initState();
+    _loadAndCalcBudget();
+  }
+
+  Future<void> _loadAndCalcBudget() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    int savedBudget = prefs.getInt('budget') ?? 0;
+    int dailyAddAmount = prefs.getInt('dailyAddAmount') ?? 0;
+    String? lastDateString = prefs.getString('lastAddedDate');
+
+    DateTime now = DateTime.now();
+    DateTime today = DateTime(now.year, now.month, now.day);
+
+    if (lastDateString != null) {
+      DateTime lastDate = DateTime.parse(lastDateString);
+
+      int daysPassed = today.difference(lastDate).inDays;
+      if (daysPassed > 0) {
+        savedBudget += (dailyAddAmount * daysPassed);
+
+        await prefs.setInt('budget', savedBudget);
+        await prefs.setString('lastAddedDate', today.toIso8601String());
+      }
+    } else {
+      await prefs.setString('lastAddedDate', today.toIso8601String());
+    }
+
     setState(() {
-      if (value == 'C') {
+      budget = savedBudget;
+    });
+  }
+
+  void _handleButtonPress(String value) async {
+    if (value == 'C') {
+      setState(() {
         pendingTransaction = '';
-      } else if (value == '=') {
-        if (pendingTransaction.isNotEmpty) {
-          int subtractionAmount = int.parse(pendingTransaction);
+      });
+    } else if (value == '=') {
+      if (pendingTransaction.isNotEmpty) {
+        int subtractionAmount = int.parse(pendingTransaction);
+        setState(() {
           budget -= subtractionAmount;
           pendingTransaction = '';
-        } else {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const SettingsScreen()),
-          );
-        }
+        });
+
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setInt('budget', budget);
       } else {
-        pendingTransaction += value;
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const SettingsScreen()),
+        );
       }
-    });
+    } else {
+      setState(() {
+        pendingTransaction += value;
+      });
+    }
   }
 
   @override
