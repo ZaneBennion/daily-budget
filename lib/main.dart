@@ -96,7 +96,12 @@ class _BudgetScreenState extends State<BudgetScreen> {
       body: Column(
         children: [
           BudgetDisplay(budget: budget, pendingTransaction: pendingTransaction),
-          Expanded(child: Keypad(onButtonPressed: _handleButtonPress)),
+          Expanded(
+            child: Keypad(
+              onButtonPressed: _handleButtonPress,
+              isPendingEmpty: pendingTransaction.isEmpty,
+            ),
+          ),
         ],
       ),
     );
@@ -160,8 +165,13 @@ class BudgetDisplay extends StatelessWidget {
 
 class Keypad extends StatelessWidget {
   final void Function(String) onButtonPressed;
+  final bool isPendingEmpty;
 
-  const Keypad({super.key, required this.onButtonPressed});
+  const Keypad({
+    super.key,
+    required this.onButtonPressed,
+    required this.isPendingEmpty,
+  });
 
   Widget _buildButtonRow(List<String> buttons) {
     return Expanded(
@@ -180,7 +190,15 @@ class Keypad extends StatelessWidget {
                     borderRadius: BorderRadius.circular(100),
                   ),
                 ),
-                child: Text(text, style: const TextStyle(fontSize: 24)),
+                child: text == '=' && isPendingEmpty
+                    ? const Icon(Icons.settings, size: 28)
+                    : Text(
+                        text,
+                        style: const TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
               ),
             ),
           );
