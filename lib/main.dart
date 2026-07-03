@@ -23,24 +23,22 @@ class BudgetScreen extends StatefulWidget {
 
 class _BudgetScreenState extends State<BudgetScreen> {
   int budget = 0;
+  String pendingTransaction = '';
 
   void _handleButtonPress(String value) {
-    int? parsedNumber = int.tryParse(value);
-
-    if (parsedNumber != null) {
-      setState(() {
-        budget = (budget * 10) + parsedNumber;
-      });
-    } else {
-      switch (value) {
-        case 'C':
-          setState(() {
-            budget = 0;
-          });
-        case '=':
-          break;
+    setState(() {
+      if (value == 'C') {
+        pendingTransaction = '';
+      } else if (value == '=') {
+        if (pendingTransaction.isNotEmpty) {
+          int subtractionAmount = int.parse(pendingTransaction);
+          budget -= subtractionAmount;
+          pendingTransaction = '';
+        }
+      } else {
+        pendingTransaction += value;
       }
-    }
+    });
   }
 
   @override
@@ -65,7 +63,7 @@ class BudgetDisplay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 120,
+      height: 150,
       color: AppColors.blue,
       alignment: Alignment.centerRight,
       child: Text(
@@ -81,39 +79,43 @@ class Keypad extends StatelessWidget {
 
   const Keypad({super.key, required this.onButtonPressed});
 
-  @override
-  Widget build(BuildContext context) {
-    final numbers = [
-      '7',
-      '8',
-      '9',
-      '4',
-      '5',
-      '6',
-      '1',
-      '2',
-      '3',
-      'C',
-      '0',
-      '=',
-    ];
-
-    return Container(
-      color: AppColors.bgAccent,
-      child: GridView.count(
-        crossAxisCount: 3,
-        mainAxisSpacing: 10,
-        crossAxisSpacing: 10,
-        children: numbers.map((number) {
-          return FilledButton(
-            onPressed: () => onButtonPressed(number),
-            style: FilledButton.styleFrom(
-              backgroundColor: AppColors.bg,
-              foregroundColor: AppColors.text,
+  Widget _buildButtonRow(List<String> buttons) {
+    return Expanded(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: buttons.map((text) {
+          return Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: FilledButton(
+                onPressed: () => onButtonPressed(text),
+                style: FilledButton.styleFrom(
+                  backgroundColor: AppColors.bgAccent,
+                  foregroundColor: AppColors.text,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(100),
+                  ),
+                ),
+                child: Text(text, style: const TextStyle(fontSize: 24)),
+              ),
             ),
-            child: Text('$number', style: const TextStyle(fontSize: 24)),
           );
         }).toList(),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      child: Column(
+        children: [
+          _buildButtonRow(['7', '8', '9']),
+          _buildButtonRow(['4', '5', '6']),
+          _buildButtonRow(['1', '2', '3']),
+          _buildButtonRow(['C', '0', '=']),
+        ],
       ),
     );
   }
