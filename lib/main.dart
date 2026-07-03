@@ -122,6 +122,8 @@ class BudgetDisplay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool isEmpty = pendingTransaction.isEmpty;
+
     return SizedBox(
       height: 150,
       child: Column(
@@ -143,22 +145,19 @@ class BudgetDisplay extends StatelessWidget {
             ),
           ),
 
-          if (pendingTransaction.isNotEmpty)
-            Expanded(
-              flex: 1,
-              child: Container(
-                color: AppColors.pink,
-                alignment: Alignment.centerRight,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 24,
-                  vertical: 0,
-                ),
-                child: Text(
-                  '-$pendingTransaction',
-                  style: const TextStyle(fontSize: 36),
-                ),
-              ),
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 250),
+            curve: Curves.easeOutCubic,
+            height: isEmpty ? 0 : 50,
+            color: AppColors.pink,
+            alignment: Alignment.centerRight,
+            clipBehavior: Clip.hardEdge,
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 0),
+            child: Text(
+              '-$pendingTransaction',
+              style: const TextStyle(fontSize: 36),
             ),
+          ),
         ],
       ),
     );
