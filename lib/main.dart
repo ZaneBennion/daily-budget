@@ -24,10 +24,23 @@ class BudgetScreen extends StatefulWidget {
 class _BudgetScreenState extends State<BudgetScreen> {
   int budget = 0;
 
-  void _handleButtonPress(int number) {
-    setState(() {
-      budget = (budget * 10) + number;
-    });
+  void _handleButtonPress(String value) {
+    int? parsedNumber = int.tryParse(value);
+
+    if (parsedNumber != null) {
+      setState(() {
+        budget = (budget * 10) + parsedNumber;
+      });
+    } else {
+      switch (value) {
+        case 'C':
+          setState(() {
+            budget = 0;
+          });
+        case '=':
+          break;
+      }
+    }
   }
 
   @override
@@ -64,13 +77,26 @@ class BudgetDisplay extends StatelessWidget {
 }
 
 class Keypad extends StatelessWidget {
-  final void Function(int) onButtonPressed;
+  final void Function(String) onButtonPressed;
 
   const Keypad({super.key, required this.onButtonPressed});
 
   @override
   Widget build(BuildContext context) {
-    final numbers = [7, 8, 9, 4, 5, 6, 1, 2, 3, 0];
+    final numbers = [
+      '7',
+      '8',
+      '9',
+      '4',
+      '5',
+      '6',
+      '1',
+      '2',
+      '3',
+      'C',
+      '0',
+      '=',
+    ];
 
     return Container(
       color: AppColors.bgAccent,
