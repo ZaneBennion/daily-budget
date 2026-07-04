@@ -264,6 +264,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
     int newAmount = int.tryParse(_amountController.text) ?? 0;
 
     await prefs.setInt('dailyAddAmount', newAmount);
+
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Updated Daily Amount'),
+          duration: const Duration(seconds: 2),
+          backgroundColor: AppColors.green,
+        ),
+      );
+    }
   }
 
   Future<void> _oneTimeAdd() async {
@@ -274,6 +284,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
     await prefs.setInt('budget', savedBudget + addAmount);
     _additionController.text = '';
+
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Added \$$addAmount'),
+          duration: const Duration(seconds: 2),
+          backgroundColor: AppColors.green,
+        ),
+      );
+    }
   }
 
   @override
