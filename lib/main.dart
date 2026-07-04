@@ -111,9 +111,9 @@ class _BudgetScreenState extends State<BudgetScreen> {
           BudgetDisplay(budget: budget, pendingTransaction: pendingTransaction),
           Expanded(
             child: Align(
-              alignment: Alignment.bottomCenter,
+              alignment: Alignment.center,
               child: ConstrainedBox(
-                constraints: const BoxConstraints(maxHeight: 450),
+                constraints: const BoxConstraints(maxHeight: 600),
                 child: Keypad(
                   onButtonPressed: _handleButtonPress,
                   isPendingEmpty: pendingTransaction.isEmpty,
