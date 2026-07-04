@@ -11,7 +11,14 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(title: 'Budget App', home: BudgetScreen());
+    return MaterialApp(
+      title: 'Budget App',
+      theme: ThemeData(
+        scaffoldBackgroundColor: AppColors.bg,
+        appBarTheme: AppBarTheme(backgroundColor: AppColors.bg),
+      ),
+      home: BudgetScreen(),
+    );
   }
 }
 
@@ -77,10 +84,11 @@ class _BudgetScreenState extends State<BudgetScreen> {
         final prefs = await SharedPreferences.getInstance();
         await prefs.setInt('budget', budget);
       } else {
-        Navigator.push(
+        await Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => const SettingsScreen()),
         );
+        _loadAndCalcBudget();
       }
     } else {
       setState(() {
@@ -233,6 +241,7 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   final TextEditingController _amountController = TextEditingController();
+  final TextEditingController _additionController = TextEditingController();
 
   @override
   void initState() {
@@ -257,9 +266,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
     await prefs.setInt('dailyAddAmount', newAmount);
   }
 
+  Future<void> _oneTimeAdd() async {
+    final prefs = await SharedPreferences.getInstance();
+    int savedBudget = prefs.getInt('budget') ?? 0;
+
+    int addAmount = int.tryParse(_additionController.text) ?? 0;
+
+    await prefs.setInt('budget', savedBudget + addAmount);
+    _additionController.text = '';
+  }
+
   @override
   void dispose() {
     _amountController.dispose();
+    _additionController.dispose();
     super.dispose();
   }
 
@@ -287,13 +307,42 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 labelText: 'Amount',
               ),
             ),
+            const SizedBox(height: 8),
 
             FilledButton(
               onPressed: () => _saveAmount(),
               style: FilledButton.styleFrom(
+                backgroundColor: AppColors.green,
                 padding: const EdgeInsets.symmetric(vertical: 16),
               ),
               child: const Text('Save', style: TextStyle(fontSize: 18)),
+            ),
+            const SizedBox(height: 48),
+
+            const Text(
+              'One Time Addition',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 16),
+
+            TextField(
+              controller: _additionController,
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                prefixIcon: Icon(Icons.attach_money),
+                labelText: 'Amount',
+              ),
+            ),
+            const SizedBox(height: 8),
+
+            FilledButton(
+              onPressed: () => _oneTimeAdd(),
+              style: FilledButton.styleFrom(
+                backgroundColor: AppColors.green,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+              ),
+              child: const Text('Add', style: TextStyle(fontSize: 18)),
             ),
           ],
         ),
