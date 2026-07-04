@@ -15,7 +15,10 @@ class MyApp extends StatelessWidget {
       title: 'Budget App',
       theme: ThemeData(
         scaffoldBackgroundColor: AppColors.bg,
-        appBarTheme: AppBarTheme(backgroundColor: AppColors.bg),
+        appBarTheme: AppBarTheme(
+          backgroundColor: AppColors.bg,
+          foregroundColor: AppColors.text,
+        ),
       ),
       home: BudgetScreen(),
     );
@@ -102,7 +105,7 @@ class _BudgetScreenState extends State<BudgetScreen> {
     final bool isShortScreen = MediaQuery.of(context).size.height < 600;
 
     return Scaffold(
-      appBar: isShortScreen ? null : AppBar(title: const Text('Budget App')),
+      appBar: isShortScreen ? null : AppBar(title: const Text('')),
       body: Column(
         children: [
           BudgetDisplay(budget: budget, pendingTransaction: pendingTransaction),
@@ -307,64 +310,66 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Settings')),
-      body: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const Text(
-              'Daily Budget Addition',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16),
-
-            TextField(
-              controller: _amountController,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.attach_money),
-                labelText: 'Amount',
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const Text(
+                'Daily Budget Addition',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
-            ),
-            const SizedBox(height: 8),
+              const SizedBox(height: 16),
 
-            FilledButton(
-              onPressed: () => _saveAmount(),
-              style: FilledButton.styleFrom(
-                backgroundColor: AppColors.green,
-                padding: const EdgeInsets.symmetric(vertical: 16),
+              TextField(
+                controller: _amountController,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.attach_money),
+                  labelText: 'Amount',
+                ),
               ),
-              child: const Text('Save', style: TextStyle(fontSize: 18)),
-            ),
-            const SizedBox(height: 48),
+              const SizedBox(height: 8),
 
-            const Text(
-              'One Time Addition',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16),
-
-            TextField(
-              controller: _additionController,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.attach_money),
-                labelText: 'Amount',
+              FilledButton(
+                onPressed: () => _saveAmount(),
+                style: FilledButton.styleFrom(
+                  backgroundColor: AppColors.green,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                ),
+                child: const Text('Save', style: TextStyle(fontSize: 18)),
               ),
-            ),
-            const SizedBox(height: 8),
+              const SizedBox(height: 48),
 
-            FilledButton(
-              onPressed: () => _oneTimeAdd(),
-              style: FilledButton.styleFrom(
-                backgroundColor: AppColors.green,
-                padding: const EdgeInsets.symmetric(vertical: 16),
+              const Text(
+                'One Time Addition',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
-              child: const Text('Add', style: TextStyle(fontSize: 18)),
-            ),
-          ],
+              const SizedBox(height: 16),
+
+              TextField(
+                controller: _additionController,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.attach_money),
+                  labelText: 'Amount',
+                ),
+              ),
+              const SizedBox(height: 8),
+
+              FilledButton(
+                onPressed: () => _oneTimeAdd(),
+                style: FilledButton.styleFrom(
+                  backgroundColor: AppColors.green,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                ),
+                child: const Text('Add', style: TextStyle(fontSize: 18)),
+              ),
+            ],
+          ),
         ),
       ),
     );
