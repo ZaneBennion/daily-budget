@@ -1,6 +1,7 @@
 import 'package:budget_app/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:intl/intl.dart';
 
 void main() {
   runApp(const MyApp());
@@ -140,6 +141,10 @@ class BudgetDisplay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bool isEmpty = pendingTransaction.isEmpty;
+    final formatter = NumberFormat('#,##0');
+    String formattedPending = isEmpty
+        ? ''
+        : formatter.format(int.parse(pendingTransaction));
 
     return SizedBox(
       height: 150,
@@ -153,7 +158,7 @@ class BudgetDisplay extends StatelessWidget {
               alignment: Alignment.centerRight,
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 0),
               child: Text(
-                '\$$budget',
+                '\$${formatter.format(budget)}',
                 style: const TextStyle(
                   fontSize: 48,
                   fontWeight: FontWeight.bold,
@@ -171,7 +176,7 @@ class BudgetDisplay extends StatelessWidget {
             clipBehavior: Clip.hardEdge,
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 0),
             child: Text(
-              '-$pendingTransaction',
+              '-$formattedPending',
               style: const TextStyle(fontSize: 36),
             ),
           ),
