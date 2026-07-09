@@ -1,6 +1,3 @@
-# Deploy to Web
-flutter run -d web-server
+# Daily Budget
 
-# Deploy to Phone
-adb connect ipAddress:port
-flutter run
+A super simple budgeting app. You set an amount to get added to your budget everyday and that's it. Enter your transactions to subtract from your budget.
